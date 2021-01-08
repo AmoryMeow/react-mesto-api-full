@@ -1,9 +1,23 @@
-// временная авторизация. добавляет в каждый запрос объект user
-const tempAuth = (req, res, next) => {
-  req.user = {
-    _id: '5fdb9e826f74140b30ca1b79',
-  };
-  next();
-};
+const jwt = require('jsonwebtoken');
 
-module.exports = { tempAuth };
+const auth = (req, res, next) => {
+  const {authorization} = req.headers;
+
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    return res.status(401).send({ message: 'Необходима авторизация' });
+  }
+
+  const token = authorization.replace('Bearer ', '');
+  let payload;
+  try {
+    payload = jwt.verify(token, 'some-secret-key');
+  }
+  catch (err) {
+    return res.status(401).send({ message: 'Необходима авторизация' });
+  }
+
+  req.user = payload;
+  next();
+}
+
+module.exports = { auth };
