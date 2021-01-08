@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+const { createUser, login } = require('./controllers/users');
 const pageNotFound = require('./routes/pageNotFound');
 const { tempAuth } = require('./middleware/auth');
 
@@ -25,6 +26,8 @@ app.use(tempAuth);
 
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
+app.post('/signin', login);
+app.post('/signup', createUser);
 app.use('*', pageNotFound);
 
 app.listen(PORT, () => {
