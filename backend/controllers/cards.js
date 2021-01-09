@@ -23,13 +23,21 @@ const createCard = (req, res) => {
 
 const deleteCardById = (req, res) => {
   const { cardId } = req.params;
-  cardModel.findByIdAndRemove(cardId)
+  cardModel.findById(cardId)
     .orFail(() => {
       const error = new Error('Данные не найдены');
       error.statusCode = 404;
       throw error;
     })
-    .then((card) => res.status(200).send(card))
+    .then((card) => {
+      if (card.owner != req.user) {
+        const error = new Error('Недостаточно прав');
+        error.statusCode = 404;
+        throw error;
+      }
+      cardModel.findByIdAndRemove(cardId)
+        .then((card) => res.status(200).send(card));
+    })
     .catch((err) => {
       if (err.kind === 'ObjectId' || err.kind === 'CastError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
