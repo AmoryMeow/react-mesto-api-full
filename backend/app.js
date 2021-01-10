@@ -33,8 +33,6 @@ app.use('*', pageNotFound);
 
 app.use((err, req, res, next) => {
   const {statusCode = 500, message} = err;
-  console.log('message: ', message);
-  console.log('statusCode: ', statusCode);
   res.status(statusCode)
     .send({message:
       statusCode === 500

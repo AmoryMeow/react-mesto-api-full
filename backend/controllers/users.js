@@ -30,7 +30,7 @@ const getUserById = (req, res, next) => {
     .catch(next);
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
   bcrypt.hash(password,10)
   .then(hash => userModel.create({
@@ -43,55 +43,52 @@ const createUser = (req, res) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+        throw new BadRequestError('Переданы некорректные данные');
       } else {
-        res.status(500).send({ message: `Ошибка сервера ${err}` });
+        throw new Error('На сервере произошла ошибка');
       }
-    });
+    })
+    .catch(next);
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const id = req.user._id;
   const { name, about } = req.body;
   userModel.findByIdAndUpdate(id, { name, about }, { new: true })
-    .orFail(() => {
-      const error = new Error('Данные не найдены');
-      error.statusCode = 404;
-      throw error;
+    .then((data) => {
+      if (!data) {
+        throw new NotFoundError('Пользователь не найден');
+      }
+      res.status(200).send(data)
     })
-    .then((data) => res.status(200).send(data))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+        next(new BadRequestError('Переданы некорректные данные'));
       } else if (err.kind === 'ObjectId' || err.kind === 'CastError') {
-        res.status(400).send({ message: 'Ошибка получения данных' });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
+        next(new BadRequestError('Ошибка получения данных'));
       } else {
-        res.status(500).send({ message: `Ошибка сервера ${err}` });
+        next(err);
       }
     });
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const id = req.user._id;
   const { avatar } = req.body;
   userModel.findByIdAndUpdate(id, { avatar }, { new: true })
-    .orFail(() => {
-      const error = new Error('Данные не найдены');
-      error.statusCode = 404;
-      throw error;
+    .then((data) => {
+      if (!data) {
+        throw new NotFoundError('Пользователь не найден');
+      }
+      res.status(200).send(data)
     })
-    .then((data) => res.status(200).send(data))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+        next(new BadRequestError('Переданы некорректные данные'));
       } else if (err.kind === 'ObjectId' || err.kind === 'CastError') {
-        res.status(400).send({ message: 'Ошибка получения данных' });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
+        next(new BadRequestError('Ошибка получения данных'));
       } else {
-        res.status(500).send({ message: `Ошибка сервера ${err}` });
+        next(err);
       }
     });
 };
