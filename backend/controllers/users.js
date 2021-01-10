@@ -4,10 +4,10 @@ const jwt = require('jsonwebtoken');
 const NotFoundError = require('../errors/not-found-err');
 const BadRequestError = require('../errors/bad-request-err');
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   userModel.find({})
     .then((data) => res.status(200).send(data))
-    .catch((err) => res.status(500).send({ message: `Ошибка сервера ${err}` }));
+    .catch(next);
 };
 
 const getUserById = (req, res, next) => {
