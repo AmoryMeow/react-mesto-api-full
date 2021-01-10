@@ -31,6 +31,18 @@ app.use('/', usersRouter);
 app.use('/', cardsRouter);
 app.use('*', pageNotFound);
 
+app.use((err, req, res, next) => {
+  const {statusCode = 500, message} = err;
+  console.log('message: ', message);
+  console.log('statusCode: ', statusCode);
+  res.status(statusCode)
+    .send({message:
+      statusCode === 500
+      ? "На сервере произошла ошибка"
+      : message
+    })
+})
+
 app.listen(PORT, () => {
   console.log(`Start server on port ${PORT}`);
 });

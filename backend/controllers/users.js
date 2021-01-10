@@ -1,6 +1,8 @@
 const userModel = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const NotFoundError = require('../errors/not-found-err');
+const BadRequestError = require('../errors/bad-request-err');
 
 const getUser = (req, res) => {
   userModel.find({})
@@ -8,24 +10,24 @@ const getUser = (req, res) => {
     .catch((err) => res.status(500).send({ message: `Ошибка сервера ${err}` }));
 };
 
-const getUserById = (req, res) => {
+const getUserById = (req, res, next) => {
   const { userId } = req.params;
   userModel.findById(userId)
-    .orFail(() => {
-      const error = new Error('Данные не найдены');
-      error.statusCode = 404;
-      throw error;
+    .then((data) => {
+      if (!data) {
+        throw new NotFoundError('Пользователь не найден');
+      }
+      res.status(200).send(data);
     })
-    .then((data) => res.status(200).send(data))
     .catch((err) => {
       if (err.kind === 'ObjectId' || err.kind === 'CastError') {
-        res.status(400).send({ message: 'Ошибка получения данных' });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
-      } else {
-        res.status(500).send({ message: `Ошибка сервера ${err}` });
+        throw new BadRequestError('Ошибка получения данных');
       }
-    });
+      else {
+        throw new Error('На сервере произошла ошибка');
+      }
+    })
+    .catch(next);
 };
 
 const createUser = (req, res) => {
@@ -94,7 +96,7 @@ const updateAvatar = (req, res) => {
     });
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const {email, password} = req.body;
 
   return userModel.findUserByCredentials(email, password)
@@ -103,8 +105,8 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      res.status(401).send({ message: err.message });
-  });
+      next(err)
+    });
 }
 
 module.exports = {
