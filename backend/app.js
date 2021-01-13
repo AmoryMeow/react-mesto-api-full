@@ -1,6 +1,7 @@
 const exspress = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const { errors } = require('celebrate');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { createUser, login } = require('./controllers/users');
@@ -30,6 +31,8 @@ app.use(auth);
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
 app.use('*', pageNotFound);
+
+app.use(errors());
 
 app.use((err, req, res, next) => {
   const {statusCode = 500, message} = err;
