@@ -10,6 +10,26 @@ const getUser = (req, res, next) => {
     .catch(next);
 };
 
+const getCurrentUser = (req, res, next) => {
+  const userId = req.user._id;
+  userModel.findById(userId)
+    .then((data) => {
+      if (!data) {
+        throw new NotFoundError('Пользователь не найден');
+      }
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      if (err.kind === 'ObjectId' || err.kind === 'CastError') {
+        throw new BadRequestError('Ошибка получения данных');
+      }
+      else {
+        throw new Error('На сервере произошла ошибка');
+      }
+    })
+    .catch(next);
+};
+
 const getUserById = (req, res, next) => {
   const { userId } = req.params;
   userModel.findById(userId)
@@ -40,7 +60,10 @@ const createUser = (req, res, next) => {
     email: email,
     password: hash
   }))
-    .then((user) => res.status(200).send(user))
+    .then((user) => {
+      userModel.findById(user._id)
+        .then((user) => res.status(200).send(user))
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new BadRequestError('Переданы некорректные данные');
@@ -107,5 +130,5 @@ const login = (req, res, next) => {
 }
 
 module.exports = {
-  getUser, getUserById, createUser, updateUser, updateAvatar, login,
+  getUser, getUserById, getCurrentUser, createUser, updateUser, updateAvatar, login,
 };
