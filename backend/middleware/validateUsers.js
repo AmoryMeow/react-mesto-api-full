@@ -15,7 +15,7 @@ const checkUpdateUser = celebrate({
 
 const checkUpdateAvatar = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string(),
+    avatar: Joi.string().pattern(/https?:\/\/w{0,3}[a-z0-9-._~:\/?#[\]@!$&'()*+,;=]{0,}/i),
   })
 })
 
