@@ -8,13 +8,13 @@ const UserSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: "Жак-Ив Кусто",
+    default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: "Исследователь",
+    default: 'Исследователь',
   },
   avatar: {
     type: String,
@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
       },
       message: 'Некорректный URL',
     },
-    default: "https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png",
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email: {
     type: String,
@@ -44,8 +44,8 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-UserSchema.statics.findUserByCredentials = function(email, password) {
-  return this.findOne({email}).select('+password')
+UserSchema.statics.findUserByCredentials = function (email, password) {
+  return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
         return Promise.reject(new BadRequestError('Неправильный email или пароль'));
@@ -57,9 +57,8 @@ UserSchema.statics.findUserByCredentials = function(email, password) {
           }
           return user;
         });
-    })
-
-}
+    });
+};
 
 const userModel = mongoose.model('user', UserSchema);
 module.exports = userModel;

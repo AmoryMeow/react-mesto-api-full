@@ -19,7 +19,7 @@ const createCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         throw new BadRequestError('Переданы некорректные данные');
       } else {
-        next(err)
+        next(err);
       }
     })
     .catch(next);
@@ -32,11 +32,11 @@ const deleteCardById = (req, res, next) => {
       if (!card) {
         throw new NotFoundError('Данные не найдены');
       }
-      if (card.owner != req.user) {
+      if (card.owner !== req.user) {
         throw new Forbidden('Недостаточно прав');
       }
       cardModel.findByIdAndRemove(cardId)
-        .then((card) => res.status(200).send(card));
+        .then((data) => res.status(200).send(data));
     })
     .catch((err) => {
       if (err.kind === 'ObjectId' || err.kind === 'CastError') {
@@ -44,7 +44,7 @@ const deleteCardById = (req, res, next) => {
       } else {
         next(err);
       }
-    })
+    });
 };
 
 const likeCard = (req, res, next) => {
@@ -58,7 +58,7 @@ const likeCard = (req, res, next) => {
       if (!data) {
         throw new NotFoundError('Данные не найдены');
       }
-      res.status(200).send(data)
+      res.status(200).send(data);
     })
     .catch((err) => {
       if (err.kind === 'ObjectId' || err.kind === 'CastError') {

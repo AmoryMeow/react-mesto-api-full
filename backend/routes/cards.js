@@ -5,7 +5,7 @@ const {
 } = require('../controllers/cards');
 
 const {
-  checkCreateCard, checkCardId
+  checkCreateCard, checkCardId,
 } = require('../middleware/validateCards');
 
 router.get('/cards', getCards);

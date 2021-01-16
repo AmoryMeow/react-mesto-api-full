@@ -13,4 +13,4 @@ const checkCardId = celebrate({
   }),
 });
 
-module.exports = { checkCreateCard, checkCardId}
+module.exports = { checkCreateCard, checkCardId };
