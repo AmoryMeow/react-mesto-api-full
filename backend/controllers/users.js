@@ -23,6 +23,9 @@ const getCurrentUser = (req, res, next) => {
       if (err.kind === 'ObjectId' || err.kind === 'CastError') {
         throw new BadRequestError('Ошибка получения данных');
       }
+      else if (err.statusCode === 404) {
+        next(err);
+      } 
       else {
         throw new Error('На сервере произошла ошибка');
       }
@@ -43,7 +46,9 @@ const getUserById = (req, res, next) => {
       if (err.kind === 'ObjectId' || err.kind === 'CastError') {
         throw new BadRequestError('Ошибка получения данных');
       }
-      else {
+      else if (err.statusCode === 404) {
+        next(err);
+      } else {
         throw new Error('На сервере произошла ошибка');
       }
     })
@@ -87,6 +92,9 @@ const updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
+      }
+      else if (err.statusCode === 404) {
+        next(err);
       } else if (err.kind === 'ObjectId' || err.kind === 'CastError') {
         next(new BadRequestError('Ошибка получения данных'));
       } else {
@@ -108,6 +116,9 @@ const updateAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
+      } 
+      else if (err.statusCode === 404) {
+        next(err);
       } else if (err.kind === 'ObjectId' || err.kind === 'CastError') {
         next(new BadRequestError('Ошибка получения данных'));
       } else {
