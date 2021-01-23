@@ -32,7 +32,7 @@ const deleteCardById = (req, res, next) => {
       if (!card) {
         throw new NotFoundError('Данные не найдены');
       }
-      if (card.owner !== req.user) {
+      if (card.owner.toString() !== req.user._id) {
         throw new Forbidden('Недостаточно прав');
       }
       cardModel.findByIdAndRemove(cardId)

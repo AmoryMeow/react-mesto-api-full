@@ -3,6 +3,7 @@ const exspress = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
+const cors = require('cors')
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { createUser, login } = require('./controllers/users');
@@ -11,6 +12,10 @@ const { auth } = require('./middleware/auth');
 const { requestLogger, errortLogger } = require('./middleware/logger');
 
 const { PORT = 3000 } = process.env;
+
+const allowedCors = [
+  'http://localhost:3001',
+];
 
 const app = exspress();
 
@@ -21,6 +26,15 @@ mongoose.connect('mongodb://localhost:27017/mestodb',
     useFindAndModify: false,
     useUnifiedTopology: true,
   });
+
+app.use(function(req, res, next) {
+  const { origin } = req.headers;
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  next();
+});
+app.use(cors())
 
 app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()); // parse application/json
