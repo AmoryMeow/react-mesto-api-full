@@ -47,7 +47,7 @@ export class Auth {
 }
 
 const auth = new Auth({
-  baseUrl: 'http://api.akatanova.students.nomoredomains.icu',
+  baseUrl: 'https://api.akatanova.students.nomoredomains.icu',
   headers: {
     'Content-Type': 'application/json'
   }

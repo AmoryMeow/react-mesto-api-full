@@ -120,9 +120,8 @@ export class Api {
   }
 }
 
-const token = localStorage.getItem('token');
 const api = new Api({
-  baseUrl: 'http://api.akatanova.students.nomoredomains.icu',
+  baseUrl: 'https://api.akatanova.students.nomoredomains.icu',
   headers: {
     'Content-Type': 'application/json'
   }
