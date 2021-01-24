@@ -14,7 +14,7 @@ const { requestLogger, errortLogger } = require('./middleware/logger');
 const { PORT = 3000 } = process.env;
 
 const allowedCors = [
-  'http://localhost:3001',
+  'http://akatanova.students.nomoredomains.icu',
 ];
 
 const app = exspress();
