@@ -122,7 +122,7 @@ export class Api {
 
 const token = localStorage.getItem('token');
 const api = new Api({
-  baseUrl: 'api.akatanova.students.nomoredomains.icu',
+  baseUrl: 'http://api.akatanova.students.nomoredomains.icu',
   headers: {
     'Content-Type': 'application/json'
   }
