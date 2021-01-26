@@ -51,10 +51,8 @@ app.get('/crash-test', () => {
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-app.use(auth);
-
-app.use('/', usersRouter);
-app.use('/', cardsRouter);
+app.use('/users', auth, usersRouter);
+app.use('/cards', auth, cardsRouter);
 app.use('*', pageNotFound);
 
 app.use(errortLogger);
