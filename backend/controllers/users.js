@@ -58,6 +58,11 @@ const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
+
+  if (!email || !password) {
+    throw new BadRequestError('Переданы некорректные данные');
+  }
+
   bcrypt.hash(password, 10)
     .then((hash) => userModel.create({
       name,
@@ -74,6 +79,7 @@ const createUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         throw new BadRequestError('Переданы некорректные данные');
       } else {
+
         throw new Error('На сервере произошла ошибка');
       }
     })
@@ -83,6 +89,9 @@ const createUser = (req, res, next) => {
 const updateUser = (req, res, next) => {
   const id = req.user._id;
   const { name, about } = req.body;
+  if (!name || !about) {
+    throw new BadRequestError('Переданы некорректные данные');
+  }
   userModel.findByIdAndUpdate(id, { name, about }, { new: true })
     .then((data) => {
       if (!data) {

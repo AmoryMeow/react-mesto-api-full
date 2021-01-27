@@ -5,10 +5,10 @@ const {
 } = require('../controllers/users');
 const { checkUserId, checkUpdateUser, checkUpdateAvatar } = require('../middleware/validateUsers');
 
-router.get('/users', getUser);
-router.get('/users/me', getCurrentUser);
-router.get('/users/:userId', checkUserId, getUserById);
-router.patch('/users/me', checkUpdateUser, updateUser);
-router.patch('/users/me/avatar', checkUpdateAvatar, updateAvatar);
+router.get('/', getUser);
+router.get('/me', getCurrentUser);
+router.get('/:userId', checkUserId, getUserById);
+router.patch('/me', checkUpdateUser, updateUser);
+router.patch('/me/avatar', checkUpdateAvatar, updateAvatar);
 
 module.exports = router;
