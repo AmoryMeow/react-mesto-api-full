@@ -5,6 +5,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const userModel = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const BadRequestError = require('../errors/bad-request-err');
+const ConflictErr = require('../errors/conflict-err');
 
 const getUser = (req, res, next) => {
   userModel.find({})
@@ -76,7 +77,10 @@ const createUser = (req, res, next) => {
         .then((data) => res.status(200).send(data));
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'MongoError' && err.code === 11000 && err.keyPattern.email) {
+        throw new ConflictErr('Пользователь с указанным email уже существует');
+      }
+      else if (err.name === 'ValidationError') {
         throw new BadRequestError('Переданы некорректные данные');
       } else {
 
