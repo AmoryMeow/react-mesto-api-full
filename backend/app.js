@@ -10,6 +10,7 @@ const { createUser, login } = require('./controllers/users');
 const pageNotFound = require('./routes/pageNotFound');
 const { auth } = require('./middleware/auth');
 const { requestLogger, errortLogger } = require('./middleware/logger');
+
 const { PORT = 3000 } = process.env;
 
 const allowedCors = [
