@@ -1,7 +1,7 @@
 {
   "name": "express-mesto",
   "version": "1.0.0",
-  "description": "`/public` — статика, полученная в результате билда фронтенд-приложения на Реакте  \r `/data` — JSON-файлы для временной эмуляции работы с базой данных  \r `/routes` — папка с файлами роутера",
+  "description": "`/routes` — папка с файлами роутера",
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
@@ -13,7 +13,7 @@
     "url": "git+https://github.com/AmoryMeow/express-mesto.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Anastasia Katanova",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/AmoryMeow/express-mesto/issues"

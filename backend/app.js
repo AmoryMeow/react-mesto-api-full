@@ -10,6 +10,7 @@ const { createUser, login } = require('./controllers/users');
 const pageNotFound = require('./routes/pageNotFound');
 const { auth } = require('./middleware/auth');
 const { requestLogger, errortLogger } = require('./middleware/logger');
+const { checkLogin, checkRegister } = require('./middleware/validateUsers');
 
 const { PORT = 3000 } = process.env;
 
@@ -48,8 +49,8 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', checkLogin, login);
+app.post('/signup', checkRegister, createUser);
 
 app.use('/users', auth, usersRouter);
 app.use('/cards', auth, cardsRouter);
@@ -63,6 +64,7 @@ app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
   res.status(statusCode)
     .send({ message: statusCode === 500 ? 'На сервере произошла ошибка' : message });
+  next();
 });
 
 app.listen(PORT, () => {
